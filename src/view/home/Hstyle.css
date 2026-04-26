@@ -1,0 +1,540 @@
+:root {
+    --main-pink: #fce4ec;
+    --accent-pink: #f06292;
+    --dark-pink: #ad1457;
+    --glass-bg: rgba(255, 255, 255, 0.4);
+    --glow-shadow: 0 8px 32px rgba(240, 98, 146, 0.2);
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #fff5f8;
+    background-image: radial-gradient(circle at top right, #fce4ec, #ffffff);
+    font-family: 'Montserrat', sans-serif;
+    color: #4a4a4a;
+}
+
+.glass {
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: var(--glow-shadow);
+    border-radius: 20px;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    margin: 10px 20px;
+    position: sticky;
+    top: 10px;
+    z-index: 1000;
+}
+
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--accent-pink);
+    font-weight: bold;
+}
+
+.nav-links a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-links a:hover { color: var(--accent-pink); }
+
+/* Hero Section */
+.hero-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 50vh; 
+    padding:4%;
+    margin: 20px;
+    overflow: hidden;
+}
+
+.hero-image{
+   
+    display: flex;
+    justify-content: flex-end; 
+    width:900px;
+    height: 510px;
+    box-shadow: 0 0 30px rgba(240, 98, 146, 0.5);
+/* box-shadow: 10px 10px 20px rgba(.3, .3, .3, 0.3); */
+
+border-radius: 15px;
+}
+
+.hero-content h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    line-height: 1.1;
+    color: #333;
+}
+
+.hero-content h1 span { color: var(--accent-pink); }
+
+.btn-primary {
+    background: linear-gradient(90deg, #ff80ab, #f06292);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 50px;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.4);
+}
+
+/* Product Cards */
+.section-container { padding: 40px 10%; }
+.section-title { font-family: 'Playfair Display', serif; margin-bottom: 30px; }
+
+.product-grid {
+    display: grid;               
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.product-card {
+    padding: 20px;
+    text-align: center;
+    transition: 0.3s ease;
+}
+
+.product-card:hover { transform: translateY(-10px); }
+
+.product-card img {
+    width: 100%;
+    border-radius: 15px;
+    margin-bottom: 15px;
+}
+
+.add-to-cart {
+    background: var(--accent-pink);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    border-radius: 10px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+
+
+/* Offer Card */
+.offer-card {
+    background: #f48fb1;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    color: #ad1457; /* درجة أغمق عند الوقوف بالماوس */
+    text-shadow: 0 0 8px rgba(240, 98, 146, 0.6);
+}
+.auth-buttons{
+    text-decoration: none;
+    color: #ba0f48; 
+    font-weight: 600; 
+    transition: 0.3s; 
+    cursor: pointer;
+}
+
+.features-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    margin: 20px 5%;
+    padding: 15px 30px;
+    background: rgba(255, 255, 255, 0.4); /* شفافية خفيفة */
+    border-radius: 50px; /* حواف دائرية جداً زي الصورة */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(240, 98, 146, 0.1);
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.feature-icon {
+    font-size: 1.5rem;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(240, 98, 146, 0.2);
+}
+
+.feature-text strong {
+    display: block;
+    font-size: 0.9rem;
+    color: #4a4a4a;
+}
+
+.feature-text p {
+    margin: 0;
+    font-size: 0.75rem;
+    color: #888;
+}
+
+.feature-divider {
+    width: 1px;
+    height: 30px;
+    background: rgba(240, 98, 146, 0.2);
+
+}
+
+/* best seller */
+
+.main-content-wrapper {
+    display: grid;
+    grid-template-columns: 3fr 1fr; /* 3 أجزاء للمنتجات وجزء للعرض */
+    gap: 20px;
+    padding: 0 5%;
+}
+
+/* جزء الـ Special Offer */
+.offer-card {
+    background: linear-gradient(135deg, #ff80ab, #f06292);
+    border-radius: 20px;
+    padding: 30px 20px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 10px 20px rgba(240, 98, 146, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.offer-card h2 {
+    font-size: 2.5rem;
+    margin: 10px 0;
+}
+
+.shop-now-white {
+    background: white;
+    color: #f06292;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* صور المنتجات الصغيرة المبعثرة تحت العرض */
+.mini-products {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.floating-img {
+    width: 60px;
+    filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
+    transition: 0.3s;
+}
+
+.floating-img:hover {
+    transform: translateY(-5px) rotate(5deg);
+}
+
+/* تعديل الـ Scroll عشان يفضل شغال في المساحة الجديدة */
+.products-side {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+.products-side::-webkit-scrollbar { display: none; }
+
+.section-header {
+    padding: 20px 5% 10px; /* المسافة من الجنب عشان تبدأ زي الصورة */
+}
+
+.section-title-with-line {
+    display: flex;
+    align-items: center; /* سنترة الكلمة مع الخط */
+    gap: 15px; /* المسافة بين الكلمة وبداية الخط */
+    font-family: 'Playfair Display', serif; /* الخط الفخم اللي استعملناه */
+    font-size: 1.8rem;
+    color: #ad1457; /* لون بينك غامق عشان يظهر */
+    margin: 0;
+    white-space: nowrap; /* عشان الكلمة متنزليش تحت بعضها */
+}
+
+/* رسم الخط باستخدام الـ pseudo-element */
+.section-title-with-line::after {
+    content: "";
+    height: 1.5px; /* سمك الخط */
+    flex-grow: 1; /* يخلي الخط يمتد لحد آخر الـ container */
+    background: linear-gradient(to right, rgba(240, 98, 146, 0.6), rgba(240, 98, 146, 0.1)); /* تدرج لوني يخلي الخط يختفي في الآخر زي الصورة */
+    border-radius: 2px;
+}
+
+/* shop by skin */
+
+/* رص الكروت 4 في السطر */
+.concern-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+    padding: 20px 5%;
+}
+
+.concern-card {
+    border-radius: 25px;
+    overflow: hidden;
+    text-align: center;
+    padding-bottom: 20px;
+    transition: 0.3s ease;
+    /* الظل من الـ 4 جوانب */
+    box-shadow: 0 0 20px rgba(240, 98, 146, 0.15);
+}
+
+.concern-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 0 30px rgba(240, 98, 146, 0.3);
+}
+
+.concern-image {
+    width: 100%;
+    height: 250px; /* طول مناسب لصورة البنت */
+    overflow: hidden;
+}
+
+.concern-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* عشان ملامح الوش تظهر مظبوطة */
+    transition: 0.5s;
+}
+
+.concern-card:hover img {
+    transform: scale(1.1); /* حركة زووم خفيفة عند الوقوف بالماوس */
+}
+
+.concern-info h3 {
+    margin: 15px 0 10px;
+    font-family: 'Montserrat', sans-serif;
+    color: #4a4a4a;
+    font-size: 1.1rem;
+}
+
+/* زرار Shop Now الصغير الرقيق */
+.btn-shop-sm {
+    background: #fce4ec;
+    color: #f06292;
+    border: none;
+    padding: 6px 20px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-shop-sm:hover {
+    background: #f06292;
+    color: white;
+}
+
+.reviews-container {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; /* اليمين أكبر شوية للصور */
+    gap: 30px;
+    padding: 20px 5%;
+    align-items: start;
+}
+
+/* كارت الريفيو والاشتراك */
+.review-card {
+    padding: 30px;
+    border-radius: 30px;
+    box-shadow: 0 10px 30px rgba(240, 98, 146, 0.1);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.review-text {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* ستايل صندوق الاشتراك */
+.subscribe-box {
+    display: flex;
+    background: #fff;
+    border-radius: 50px;
+    padding: 5px;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.subscribe-box input {
+    flex: 1;
+    border: none;
+    padding: 10px 20px;
+    outline: none;
+    background: transparent;
+}
+
+.btn-subscribe {
+    background: #f06292;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* صور الـ Before & After */
+.comparison-card {
+    padding: 20px;
+    border-radius: 30px;
+}
+
+.before-after-wrapper {
+    display: flex;
+    gap: 10px;
+    height: 300px;
+}
+
+.img-box {
+    flex: 1;
+    position: relative;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.img-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.label {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(240, 98, 146, 0.7);
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    backdrop-filter: blur(5px);
+}
+
+
+.best-sellers-container {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr; /* الجزء الشمال أعرض شوية */
+    gap: 20px;
+    padding: 20px 5%;
+}
+
+/* ستايل المنتج الكبير */
+.hero-product-card {
+    border-radius: 30px;
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hero-product-card img {
+    width: 80%;
+    margin: 0 auto;
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+}
+
+/* الجزء اليمين */
+.side-content {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* كارت العرض الـ Pink */
+.offer-banner {
+    background: linear-gradient(135deg, #ff80ab, #f06292);
+    border-radius: 25px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: white;
+}
+
+/* شبكة الـ 4 كروت الصغيرة */
+.mini-products-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 جنب بعض */
+    gap: 15px;
+}
+
+.mini-card {
+    border-radius: 20px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.mini-card:hover { transform: scale(1.03); }
+
+.mini-card img {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+
+.mini-info h4 {
+    font-size: 0.8rem;
+    margin: 5px 0;
+}
+
+.mini-stars { font-size: 0.6rem; }
+
+.mini-add {
+    background: #fce4ec;
+    border: none;
+    color: #f06292;
+    font-size: 0.7rem;
+    padding: 3px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+}
