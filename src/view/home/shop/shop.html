@@ -63,13 +63,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>GlowCare | Radiant Skincare</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="/shop/styles.css" />
   </head>
   <body>
     <header class="navbar glass">
       <div class="logo">GlowCare</div>
       <nav class="nav-links">
-        <a href="/src/view/home/home.html">Home</a>
+        <a href="/home">Home</a>
         <a href="#">Shop</a>
         <a href="#">Blog</a>
         <a href="#">About</a>
@@ -77,14 +77,8 @@
 
       <div class="nav-actions">
         <div class="auth-buttons">
-          <a href="/src/view/home/auth/signIn/signin.html" class="btn-outline"
-            >Sign In |
-          </a>
-          <a
-            href="/src/view/home/auth/signIn/signin.html"
-            class="btn-primary-sm"
-            >Register</a
-          >
+          <a href="/signin" class="btn-outline">Sign In | </a>
+          <a href="/register" class="btn-primary-sm">Register</a>
         </div>
       </div>
     </header>
@@ -98,7 +92,7 @@
           <label class="filter-option">
             <input
               type="radio"
-              name="skinType"
+              name="category"
               value=""
               checked
               onchange="applyFilters()"
@@ -108,67 +102,57 @@
           <label class="filter-option">
             <input
               type="radio"
-              name="skinType"
-              value="dry"
+              name="category"
+              value="serums"
               onchange="applyFilters()"
             />
-            <span>🌸 Dry</span>
+            <span>SERUMS</span>
           </label>
           <label class="filter-option">
             <input
               type="radio"
-              name="skinType"
-              value="oily"
+              name="category"
+              value="moisturizers"
               onchange="applyFilters()"
             />
-            <span>✨ Oily</span>
+            <span>moisturizers</span>
           </label>
           <label class="filter-option">
             <input
               type="radio"
-              name="skinType"
-              value="normal"
+              name="category"
+              value="cleansers"
               onchange="applyFilters()"
             />
-            <span>🌿 Normal</span>
+            <span>cleansers</span>
           </label>
-        </div>
-
-        <div class="sidebar-section">
-          <h3 class="sidebar-title">Price Range</h3>
-          <div class="price-inputs">
-            <div class="price-field">
-              <label>Min ($)</label>
-              <input
-                type="number"
-                id="minPrice"
-                placeholder="0"
-                min="0"
-                oninput="applyFilters()"
-              />
-            </div>
-            <div class="price-field">
-              <label>Max ($)</label>
-              <input
-                type="number"
-                id="maxPrice"
-                placeholder="999"
-                min="0"
-                oninput="applyFilters()"
-              />
-            </div>
-          </div>
-          <input
-            type="range"
-            id="priceSlider"
-            min="0"
-            max="500"
-            value="500"
-            oninput="updateSlider(this.value)"
-          />
-          <div class="slider-label">
-            Up to: <span id="sliderVal">$500</span>
-          </div>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="category"
+              value="masks"
+              onchange="applyFilters()"
+            />
+            <span>MASKS</span>
+          </label>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="category"
+              value="sunscreen"
+              onchange="applyFilters()"
+            />
+            <span>SUNSCREEN</span>
+          </label>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="category"
+              value="eyecare"
+              onchange="applyFilters()"
+            />
+            <span>EYECARE</span>
+          </label>
         </div>
 
         <button class="reset-btn" onclick="resetFilters()">
@@ -197,28 +181,56 @@
       // ============================================
       // CONFIG — غير الـ URL لـ API بتاعك
       // ============================================
-      const API_BASE = "/api/products";
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const category = urlParams.get("category");
+
+      const API_BASE = "/api/v1/products";
 
       let allProducts = [];
 
       // ============================================
       // جيب المنتجات من MongoDB Atlas عبر الـ API
       // ============================================
-      async function fetchProducts() {
+      /*async function fetchProducts() {
         try {
           const res = await fetch(API_BASE);
           if (!res.ok) throw new Error("Server error");
           const data = await res.json();
-          allProducts = data.data || data; // يتعامل مع { data: [...] } أو [...]
+          allProducts = data.data; // يتعامل مع { data: [...] } أو [...]
           renderProducts(allProducts);
+          /////////////////////////////
+          console.log("RAW RESPONSE:", data);
+          console.log("DATA.DATA:", data.data);
         } catch (err) {
           document.getElementById("products-grid").innerHTML = `
           <div class="error-state">
             <p>⚠️ Could not load products.<br><small>${err.message}</small></p>
           </div>`;
         }
+      }*/
+
+      //fetch products + apply filter
+      async function fetchProducts(query = "") {
+        try {
+          const res = await fetch(`/api/v1/products${query}`);
+          const data = await res.json();
+
+          allProducts = data.data;
+          renderProducts(allProducts);
+        } catch (err) {
+          document.getElementById("products-grid").innerHTML =
+            `<p>⚠️ Error loading products</p>`;
+        }
       }
 
+      window.onload = () => {
+        if (category) {
+          fetchProducts(`?category=${category}`);
+        } else {
+          fetchProducts();
+        }
+      };
       // ============================================
       // رسم الكروت
       // ============================================
@@ -264,7 +276,8 @@
       // ============================================
       // فلترة محلية (بعد ما البيانات تتحمّل)
       // ============================================
-      function applyFilters() {
+
+      /* function applyFilters() {
         const skinType =
           document.querySelector('input[name="skinType"]:checked')?.value || "";
         const minPrice =
@@ -280,22 +293,31 @@
         });
 
         renderProducts(filtered);
+      }*/
+
+      //updated apply filters
+      function applyFilters() {
+        const category =
+          document.querySelector('input[name="category"]:checked')?.value || "";
+
+        let query = "?";
+
+        if (category) query += `category=${category}&`;
+        fetchProducts(query);
       }
 
       function updateSlider(val) {
         document.getElementById("sliderVal").textContent = `$${val}`;
         document.getElementById("maxPrice").value = val;
+
         applyFilters();
       }
 
       function resetFilters() {
-        document.querySelector('input[name="skinType"][value=""]').checked =
+        document.querySelector('input[name="category"][value=""]').checked =
           true;
-        document.getElementById("minPrice").value = "";
-        document.getElementById("maxPrice").value = "";
-        document.getElementById("priceSlider").value = 500;
-        document.getElementById("sliderVal").textContent = "$500";
-        renderProducts(allProducts);
+
+        fetchProducts(); // يرجع كل المنتجات
       }
 
       // ============================================
