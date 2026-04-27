@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const connectDB = require("./configration/db");
 const mongoose = require("mongoose");
-const api = process.env.API_URL;
+
 dotenv.config();
 const app = express();
 connectDB();
@@ -15,7 +15,10 @@ app.get("/", (req, res) => {
 });
 
 app.use(`/api/v1/users`, require("./routes/userRoutes"));
-
+app.use("/api/v1/admin", require("./routes/adminRoutes"));
+// app.get("api/v1/admin/dashboard", isAdmin, (req, res) => {
+//   res.sendFile(path.join(__dirname, "dashboard.html"));
+// });
 mongoose
   .connect(process.env.MONGO_URL)
   .then(() => {

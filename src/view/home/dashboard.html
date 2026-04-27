@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GlowCare Admin</title>
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <div class="container">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <h2 class="logo">GlowCare</h2>
+
+        <ul>
+          <li class="active">Dashboard</li>
+          <li>Products</li>
+          <li>Orders</li>
+          <li>Customers</li>
+          <li>Settings</li>
+        </ul>
+
+        <button class="logout">Logout</button>
+      </aside>
+
+      <!-- Main -->
+      <main class="main">
+        <!-- Top -->
+        <div class="topbar">
+          <h1>Welcome back, Admin 👋</h1>
+          <button class="add-btn" onclick="openAddModal()">
+            + Add Product
+          </button>
+        </div>
+
+        <!-- Cards -->
+        <div class="cards">
+          <div class="card">
+            <h3>Products</h3>
+            <p>128</p>
+          </div>
+
+          <div class="card">
+            <h3>Orders</h3>
+            <p>342</p>
+          </div>
+
+          <div class="card">
+            <h3>Customers</h3>
+            <p>1,245</p>
+          </div>
+
+          <div class="card">
+            <h3>Revenue</h3>
+            <p>$24,560</p>
+          </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+          <h2>Recent Products</h2>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+
+            <tbody id="productsTable">
+              <tr>
+                <td>Glow Serum</td>
+                <td>$45</td>
+                <td>50</td>
+                <td>
+                  <button class="edit">Edit</button>
+                  <button class="delete">Delete</button>
+                </td>
+              </tr>
+
+              <tr>
+                <td>Cleanser</td>
+                <td>$30</td>
+                <td>20</td>
+                <td>
+                  <button class="edit">Edit</button>
+                  <button class="delete">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </main>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <h3 id="modalTitle">Add Product</h3>
+
+        <input id="name" placeholder="Name" />
+        <input id="price" placeholder="Price" />
+        <input id="stock" placeholder="Stock" />
+
+        <button onclick="submitForm()">Save</button>
+        <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+    <div id="modal1" class="modal">
+      <div class="modal-content">
+        <h3 id="modalTitle">Add Product</h3>
+
+        <input id="name" placeholder="Name" />
+        <input id="price" placeholder="Price" />
+        <input id="stock" placeholder="Stock" />
+
+        <button onclick="submitForm()">Save</button>
+        <button onclick="closeModal()">Cancel</button>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    const API = "http://localhost:5000/api/v1/admin/products";
+    const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+
+    if (role !== "admin") {
+      window.location.href = "signin.html";
+    }
+    // ✅ تحميل المنتجات
+    async function loadProducts() {
+      const res = await fetch(API, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const products = await res.json();
+
+      const table = document.getElementById("productsTable");
+      table.innerHTML = "";
+
+      products.forEach((p) => {
+        table.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>$${p.price}</td>
+        <td>${p.stock}</td>
+        <td>
+          <button class="edit" onclick="editProduct('${p._id}')">Edit</button>
+          <button class="delete" onclick="deleteProduct('${p._id}')">Delete</button>
+        </td>
+      </tr>
+    `;
+      });
+    }
+
+    // ❌ حذف
+    async function deleteProduct(id) {
+      if (!confirm("Delete this product?")) return;
+
+      await fetch(`${API}/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      loadProducts();
+    }
+
+    // ➕ إضافة
+    async function addProduct(data) {
+      await fetch(API, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      closeModal();
+      loadProducts();
+    }
+
+    // ✏️ تعديل
+    async function updateProduct(id, data) {
+      await fetch(`${API}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      });
+
+      closeModal();
+      loadProducts();
+    }
+
+    let editId = null;
+
+    function openAddModal() {
+      editId = null;
+      document.getElementById("modalTitle").innerText = "Add Product";
+      document.getElementById("modal1").style.display = "flex";
+    }
+
+    function editProduct(id) {
+      editId = id;
+      document.getElementById("modalTitle").innerText = "Edit Product";
+      document.getElementById("modal1").style.display = "flex";
+    }
+
+    function closeModal() {
+      document.getElementById("modal1").style.display = "none";
+    }
+
+    // 📤 submit
+    function submitForm() {
+      const data = {
+        name: document.getElementById("name").value,
+        price: document.getElementById("price").value,
+        stock: document.getElementById("stock").value,
+      };
+
+      if (editId) {
+        updateProduct(editId, data);
+      } else {
+        addProduct(data);
+      }
+    }
+    // 📦 عند فتح الصفحة
+
+    loadProducts();
+  </script>
+</html>

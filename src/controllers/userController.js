@@ -18,14 +18,17 @@ exports.register = async (req, res) => {
       name,
       email,
       password: hashedPassword,
+      role: req.body.role,
+    });
+    const token = jwt.sign({ id: user._id, role: user.role }, "secretKey", {
+      expiresIn: "7d",
     });
 
-    res.status(201).json({ message: "User created", user });
+    res.status(201).json({ message: "User created", user, token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 exports.login = async (req, res) => {
   try {
@@ -43,21 +46,23 @@ exports.login = async (req, res) => {
 
     // 👇 create token
     const token = jwt.sign(
-      { id: user._id, email: user.email },
+      {
+        id: user._id,
+        role: user.role, // 👈 لازم دي
+      },
       "secretKey",
-      { expiresIn: "1d" }
+      { expiresIn: "7d" },
     );
-
     res.json({
       message: "Login successful",
       token,
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+        role: user.role,
+      },
     });
-
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
