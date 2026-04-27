@@ -28,7 +28,6 @@
 </body>
 </html>  -->
 
-
 <!-- <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,4 +54,274 @@
 </div>
 </header>
 </body>
+</html>
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GlowCare | Radiant Skincare</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="navbar glass">
+      <div class="logo">GlowCare</div>
+      <nav class="nav-links">
+        <a href="/src/view/home/home.html">Home</a>
+        <a href="#">Shop</a>
+        <a href="#">Blog</a>
+        <a href="#">About</a>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="auth-buttons">
+          <a href="/src/view/home/auth/signIn/signin.html" class="btn-outline"
+            >Sign In |
+          </a>
+          <a
+            href="/src/view/home/auth/signIn/signin.html"
+            class="btn-primary-sm"
+            >Register</a
+          >
+        </div>
+      </div>
+    </header>
+
+    <!-- ======= SHOP BODY ======= -->
+    <main class="shop-main">
+      <!-- SIDEBAR FILTERS -->
+      <aside class="sidebar">
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Skin Type</h3>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="skinType"
+              value=""
+              checked
+              onchange="applyFilters()"
+            />
+            <span>All Types</span>
+          </label>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="skinType"
+              value="dry"
+              onchange="applyFilters()"
+            />
+            <span>🌸 Dry</span>
+          </label>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="skinType"
+              value="oily"
+              onchange="applyFilters()"
+            />
+            <span>✨ Oily</span>
+          </label>
+          <label class="filter-option">
+            <input
+              type="radio"
+              name="skinType"
+              value="normal"
+              onchange="applyFilters()"
+            />
+            <span>🌿 Normal</span>
+          </label>
+        </div>
+
+        <div class="sidebar-section">
+          <h3 class="sidebar-title">Price Range</h3>
+          <div class="price-inputs">
+            <div class="price-field">
+              <label>Min ($)</label>
+              <input
+                type="number"
+                id="minPrice"
+                placeholder="0"
+                min="0"
+                oninput="applyFilters()"
+              />
+            </div>
+            <div class="price-field">
+              <label>Max ($)</label>
+              <input
+                type="number"
+                id="maxPrice"
+                placeholder="999"
+                min="0"
+                oninput="applyFilters()"
+              />
+            </div>
+          </div>
+          <input
+            type="range"
+            id="priceSlider"
+            min="0"
+            max="500"
+            value="500"
+            oninput="updateSlider(this.value)"
+          />
+          <div class="slider-label">
+            Up to: <span id="sliderVal">$500</span>
+          </div>
+        </div>
+
+        <button class="reset-btn" onclick="resetFilters()">
+          Reset Filters
+        </button>
+      </aside>
+
+      <!-- PRODUCTS AREA -->
+      <section class="products-section">
+        <div class="products-header">
+          <h2 class="section-heading">Our Products</h2>
+          <span class="products-count" id="products-count"></span>
+        </div>
+
+        <!-- Grid بتتملى بـ JS -->
+        <div class="products-grid" id="products-grid">
+          <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Loading products...</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // ============================================
+      // CONFIG — غير الـ URL لـ API بتاعك
+      // ============================================
+      const API_BASE = "/api/products";
+
+      let allProducts = [];
+
+      // ============================================
+      // جيب المنتجات من MongoDB Atlas عبر الـ API
+      // ============================================
+      async function fetchProducts() {
+        try {
+          const res = await fetch(API_BASE);
+          if (!res.ok) throw new Error("Server error");
+          const data = await res.json();
+          allProducts = data.data || data; // يتعامل مع { data: [...] } أو [...]
+          renderProducts(allProducts);
+        } catch (err) {
+          document.getElementById("products-grid").innerHTML = `
+          <div class="error-state">
+            <p>⚠️ Could not load products.<br><small>${err.message}</small></p>
+          </div>`;
+        }
+      }
+
+      // ============================================
+      // رسم الكروت
+      // ============================================
+      function renderProducts(products) {
+        const grid = document.getElementById("products-grid");
+        const countEl = document.getElementById("products-count");
+
+        if (!products.length) {
+          grid.innerHTML = `<div class="empty-state"><p>No products found 🌸</p></div>`;
+          countEl.textContent = "0 products";
+          return;
+        }
+
+        countEl.textContent = `${products.length} product${products.length !== 1 ? "s" : ""}`;
+
+        grid.innerHTML = products
+          .map(
+            (p, i) => `
+        <div class="product-card" style="animation-delay:${i * 0.07}s">
+          <div class="card-img-wrap">
+            <img
+              src="${p.image || p.imageUrl || ""}"
+              alt="${p.name}"
+              onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+            />
+            <div class="img-placeholder">🌸</div>
+          </div>
+          <div class="card-body">
+            ${p.skinType ? `<span class="skin-badge ${p.skinType}">${capitalize(p.skinType)}</span>` : ""}
+            <h4 class="card-name">${p.name}</h4>
+            <p class="card-desc">${p.description || ""}</p>
+            <div class="card-footer">
+              <span class="card-price">$${Number(p.price).toFixed(2)}</span>
+              <button class="add-btn" onclick="addToCart('${p._id}', '${escHtml(p.name)}')">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      // ============================================
+      // فلترة محلية (بعد ما البيانات تتحمّل)
+      // ============================================
+      function applyFilters() {
+        const skinType =
+          document.querySelector('input[name="skinType"]:checked')?.value || "";
+        const minPrice =
+          parseFloat(document.getElementById("minPrice").value) || 0;
+        const maxPrice =
+          parseFloat(document.getElementById("maxPrice").value) || Infinity;
+
+        const filtered = allProducts.filter((p) => {
+          const matchSkin = !skinType || p.skinType === skinType;
+          const price = Number(p.price);
+          const matchPrice = price >= minPrice && price <= maxPrice;
+          return matchSkin && matchPrice;
+        });
+
+        renderProducts(filtered);
+      }
+
+      function updateSlider(val) {
+        document.getElementById("sliderVal").textContent = `$${val}`;
+        document.getElementById("maxPrice").value = val;
+        applyFilters();
+      }
+
+      function resetFilters() {
+        document.querySelector('input[name="skinType"][value=""]').checked =
+          true;
+        document.getElementById("minPrice").value = "";
+        document.getElementById("maxPrice").value = "";
+        document.getElementById("priceSlider").value = 500;
+        document.getElementById("sliderVal").textContent = "$500";
+        renderProducts(allProducts);
+      }
+
+      // ============================================
+      // Helpers
+      // ============================================
+      function capitalize(s) {
+        return s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+      }
+      function escHtml(s) {
+        return s.replace(/'/g, "\\'");
+      }
+
+      let cartCount = 0;
+      function addToCart(id, name) {
+        cartCount++;
+        const btn = event.target;
+        btn.textContent = "✓ Added!";
+        btn.style.background = "#c06090";
+        setTimeout(() => {
+          btn.textContent = "Add to Cart";
+          btn.style.background = "";
+        }, 1500);
+      }
+
+      // ابدأ
+      fetchProducts();
+    </script>
+  </body>
 </html>
