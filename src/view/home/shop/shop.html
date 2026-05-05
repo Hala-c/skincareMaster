@@ -230,6 +230,8 @@
         } else {
           fetchProducts();
         }
+
+        updateCartBadge();
       };
       // ============================================
       // رسم الكروت
@@ -264,7 +266,9 @@
             <p class="card-desc">${p.description || ""}</p>
             <div class="card-footer">
               <span class="card-price">$${Number(p.price).toFixed(2)}</span>
-              <button class="add-btn" onclick="addToCart('${p._id}', '${escHtml(p.name)}')">Add to Cart</button>
+              <button class="add-btn" onclick="addToCart(this, '${p._id}', '${escHtml(p.name)}')">
+                      Add to Cart
+                    </button>
             </div>
           </div>
         </div>
@@ -330,19 +334,72 @@
         return s.replace(/'/g, "\\'");
       }
 
-      let cartCount = 0;
-      function addToCart(id, name) {
-        cartCount++;
-        const btn = event.target;
-        btn.textContent = "✓ Added!";
-        btn.style.background = "#c06090";
-        setTimeout(() => {
-          btn.textContent = "Add to Cart";
-          btn.style.background = "";
-        }, 1500);
+      //ِAdd to cart redirect
+      async function addToCart(btn, productId, name) {
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          alert("Please login first");
+          return;
+        }
+
+        try {
+          const res = await fetch("http://localhost:5000/api/cart/add", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + token,
+            },
+            body: JSON.stringify({
+              productId,
+              quantity: 1,
+            }),
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            alert(data.message || "Error");
+            return;
+          }
+
+          btn.textContent = "✓ Added!";
+          btn.style.background = "#c06090";
+
+          updateCartBadge();
+
+          setTimeout(() => {
+            window.location.href = "/src/view/home/cart.html";
+          }, 1000);
+        } catch (err) {
+          console.error(err);
+          alert("Server error");
+        }
+      }
+      async function updateCartBadge() {
+        try {
+          const res = await fetch("http://localhost:5000/api/cart", {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          });
+
+          const data = await res.json();
+
+          const count =
+            data?.items?.reduce((sum, i) => sum + i.quantity, 0) || 0;
+
+          const badge = document.getElementById("cart-badge");
+
+          if (badge) {
+            badge.textContent = count;
+            badge.classList.toggle("visible", count > 0);
+          }
+        } catch (err) {
+          console.log("Cart badge error:", err);
+        }
       }
 
-      // ابدأ
       fetchProducts();
     </script>
   </body>

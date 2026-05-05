@@ -8,7 +8,7 @@ const connectDB = require("./configration/db");
 const mongoose = require("mongoose");
 const productRoutes = require("./routes/productRoutes");
 const path = require("path");
-
+const cartRoutes = require("./routes/cartRoutes");
 //routes
 app.get("/products", (req, res) => {
   res.sendFile(path.join(__dirname, "view/home/shop/shop.html"));
@@ -39,6 +39,9 @@ app.use(`/api/v1/users`, require("./routes/userRoutes"));
 //   res.sendFile(path.join(__dirname, "dashboard.html"));
 // });
 
+app.use("/api/v1/cart", require("./routes/cartRoutes"));
+app.use("/api/v1/orders", require("./routes/orderRoutes"));
+app.use("/api/cart", cartRoutes);
 module.exports = app;
 mongoose
   .connect(process.env.MONGO_URL)
